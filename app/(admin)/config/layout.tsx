@@ -1,10 +1,4 @@
-import type { Metadata } from "next";
-import "./globals.css";
-
-export const metadata: Metadata = {
-  title: "Rehome | For Cats | Made By Zainol Amzar",
-  description: "A centralized rehome system for seeking new home for cats",
-};
+import "../../globals.css";
 
 export default function RootLayout({
   children,
