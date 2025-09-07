@@ -19,8 +19,10 @@ const CatInfoSchema = new mongoose.Schema({
   phone_number: String,
   owner_name: String,
   animal: String,
-  isActive: { type: Boolean, default: false }, // 👈 default to false
+  isActive: { type: Boolean, default: false }, // default to false
+  isApproved: { type: Boolean, default: false }, // default to false
   images: [String],
+  approvedAt: Date,
   createdAt: { type: Date, default: Date.now },
 });
 

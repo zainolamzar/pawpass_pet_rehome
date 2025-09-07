@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Rehome | For Cats | Made By Zainol Amzar",
-  description: "A centralized rehome system for seeking new home for cats",
+  title: "PawPass | Pet Rehome | For Pets | Made By Zainol Amzar",
+  description: "Pawpass is a centralised pet rehome system for seeking new home for pets",
 };
 
 export default function RootLayout({
@@ -13,6 +13,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/webicon/favicon.ico" sizes="512x512" />
+      </head>
       <body
         className={`antialiased`}
       >

@@ -8,9 +8,11 @@ const DogInfoSchema = new Schema({
   age: { type: String, required: true },
   phone_number: { type: String, required: true },
   owner_name: { type: String, required: true },
-  animal: { type: String, default: "dog" }, // 👈 always "dog"
-  isActive: { type: Boolean, default: false }, // 👈 default false
+  animal: { type: String, default: "dog" }, // always "dog"
+  isActive: { type: Boolean, default: false }, // default false
+  isApproved: { type: Boolean, default: false }, // default false
   images: [String],
+  approvedAt: { type: Date },
   createdAt: { type: Date, default: Date.now },
 });
 
