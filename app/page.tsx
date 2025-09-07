@@ -3,8 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { 
-  Cat, 
-  Dog, 
   Heart, 
   PawPrint, 
   Search, 
@@ -14,6 +12,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { useEffect, useRef, useState } from "react";
+import NavBar from "@/ui/NavBar";
 
 // Hook for fade-in on scroll
 function useFadeInOnScroll(threshold = 0.2) {
@@ -52,27 +51,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F8F8F8' }}>
       {/* Navbar */}
-      <nav className="flex justify-between items-center py-3 px-6 shadow-md sticky top-0 z-50" style={{ backgroundColor: '#E5E0D8', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
-        <Link href="/" className="flex items-center gap-3">
-          <Image src="/webicon/android-chrome-512x512.png" alt="PawPass Logo" width={45} height={45} />
-          <h1 className="text-2xl font-bold" style={{ color: '#748873', fontFamily: "'Comic Sans MS', cursive, sans-serif" }}>PawPass</h1>
-        </Link>
-        <div className="flex gap-5 items-center">
-          <Link href="/cats" className="hover:opacity-80 transition-opacity" title="Cats">
-            <Cat size={32} style={{ color: '#748873' }} />
-          </Link>
-          <Link href="/dogs" className="hover:opacity-80 transition-opacity" title="Dogs">
-            <Dog size={32} style={{ color: '#748873' }} />
-          </Link>
-          <Link
-            href="/submit"
-            className="text-white px-5 py-2 rounded-full font-semibold shadow-md hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: '#D1A980' }}
-          >
-            Submit a Pet
-          </Link>
-        </div>
-      </nav>
+      <NavBar />
 
       {/* Hero Section */}
       <main
