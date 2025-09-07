@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/webicon/favicon.ico" sizes="any" />
+        <link rel="icon" href="/webicon/favicon.ico" sizes="512x512" />
       </head>
       <body
         className={`antialiased`}

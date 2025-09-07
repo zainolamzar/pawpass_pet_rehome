@@ -210,8 +210,24 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="p-4 text-center border-t" style={{ color: '#748873', backgroundColor: '#E5E0D8' }}>
-        © {new Date().getFullYear()} PawPass. All rights reserved.
+      <footer
+        className="p-8 border-t flex flex-col items-center justify-center gap-4"
+        style={{ color: '#748873', backgroundColor: '#E5E0D8' }}
+      >
+        {/* Logo */}
+        <Image
+          src="/webicon/android-chrome-512x512.png"
+          alt="PawPass Logo"
+          width={60}
+          height={60}
+        />
+
+        {/* Disclaimer */}
+        <div className="text-center text-sm">
+          <p>All adoptions and interactions are the responsibility of the users.</p>
+          <p>PawPass is a platform for connecting pet owners and adopters, but we cannot guarantee outcomes or vet the animals personally.</p>
+          <p className="mt-2">© {new Date().getFullYear()} PawPass. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   );
