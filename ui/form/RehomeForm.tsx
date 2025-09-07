@@ -3,9 +3,29 @@
 
 import { useState } from "react";
 
+const states = [
+  "Perlis",
+  "Kedah",
+  "Pulau Pinang",
+  "Perak",
+  "Kelantan",
+  "Terengganu",
+  "Pahang",
+  "Selangor",
+  "Melaka",
+  "Negeri Sembilan",
+  "Johor",
+  "Sabah",
+  "Sarawak",
+  "WP Kuala Lumpur",
+  "WP Putrajaya",
+  "WP Labuan",
+];
+
 export default function RehomeForm() {
   const [breed, setBreed] = useState("");
-  const [location, setLocation] = useState("");
+  const [region, setRegion] = useState("");
+  const [state, setState] = useState(states[0]);
   const [gender, setGender] = useState("male");
   const [description, setDescription] = useState("");
   const [age, setAge] = useState("");
@@ -30,8 +50,10 @@ export default function RehomeForm() {
     try {
       const formData = new FormData();
       images.forEach((img) => formData.append("images", img));
+
+      // Combine region + state into a single location string
+      formData.append("location", `${region}, ${state}`);
       formData.append("breed", breed);
-      formData.append("location", location);
       formData.append("gender", gender);
       formData.append("description", description);
       formData.append("age", age);
@@ -39,7 +61,6 @@ export default function RehomeForm() {
       formData.append("owner_name", ownerName);
       formData.append("animal", animal);
 
-      // 👇 dynamically choose API route
       const endpoint = animal === "cat" ? "/api/cats" : "/api/dogs";
 
       const res = await fetch(endpoint, {
@@ -58,7 +79,6 @@ export default function RehomeForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      {/* 👇 Fix: correct handler for animal */}
       <select value={animal} onChange={(e) => setAnimal(e.target.value)}>
         <option value="cat">Cat</option>
         <option value="dog">Dog</option>
@@ -71,23 +91,37 @@ export default function RehomeForm() {
         onChange={(e) => setBreed(e.target.value)}
         required
       />
+
+      {/* Region */}
       <input
         type="text"
-        placeholder="Location"
-        value={location}
-        onChange={(e) => setLocation(e.target.value)}
+        placeholder="Region"
+        value={region}
+        onChange={(e) => setRegion(e.target.value)}
         required
       />
+
+      {/* State */}
+      <select value={state} onChange={(e) => setState(e.target.value)}>
+        {states.map((s) => (
+          <option key={s} value={s}>
+            {s}
+          </option>
+        ))}
+      </select>
+
       <select value={gender} onChange={(e) => setGender(e.target.value)}>
         <option value="male">Male</option>
         <option value="female">Female</option>
       </select>
+
       <textarea
         placeholder="Description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         required
       />
+
       <input
         type="text"
         placeholder="Age"
@@ -109,6 +143,7 @@ export default function RehomeForm() {
         onChange={(e) => setOwnerName(e.target.value)}
         required
       />
+
       <input type="file" multiple accept="image/*" onChange={handleImageChange} />
 
       <div className="flex gap-2">
