@@ -1,4 +1,4 @@
-import RehomeForm from "@/ui/form/RehomeForm";
+import RehomeForm from "@/components/RehomeForm";
 
 export default function SubmitPage() {
   return (

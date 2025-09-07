@@ -12,7 +12,8 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { useEffect, useRef, useState } from "react";
-import NavBar from "@/ui/NavBar";
+import NavBar from "@/components/ui/NavBar";
+import StyledQR from "@/components/QRCodeStyling";
 
 // Hook for fade-in on scroll
 function useFadeInOnScroll(threshold = 0.2) {
@@ -40,8 +41,10 @@ function useFadeInOnScroll(threshold = 0.2) {
 export default function HomePage() {
   const heroRef = useFadeInOnScroll(0.2);
   const featuresRef = useFadeInOnScroll(0.2);
+  const ctaRef = useFadeInOnScroll(0.2)
   const whyChooseRef = useFadeInOnScroll(0.2);
   const tipsRef = useFadeInOnScroll(0.2);
+  const supportRef = useFadeInOnScroll(0.2);
 
   const fadeClass = (isVisible: boolean) =>
     `transition-opacity duration-1000 transform ${
@@ -146,6 +149,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* CTA Section */}
+
       {/* Why Choose Us Section */}
       <section
         ref={whyChooseRef.ref}
@@ -229,6 +234,38 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Support Me Section */}
+      <section
+        ref={supportRef.ref}
+        className={`${fadeClass(supportRef.isVisible)} py-20 px-8 w-full`}
+        style={{ backgroundColor: "#E5E0D8" }}
+      >
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-4xl font-bold mb-4" style={{ color: "#748873" }}>
+            A cup of coffee won’t hurt
+          </h2>
+          <p className="text-lg mb-8" style={{ color: "#748873" }}>
+            Support me in maintaining this site
+          </p>
+
+          <div className="flex flex-col items-center gap-4">
+            {/* Styled QR Code */}
+            <StyledQR url="https://sociabuzz.com/zainolamzar/donate" />
+
+            {/* Alternative link */}
+            <a
+              href="https://sociabuzz.com/zainolamzar/donate"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-6 py-3 rounded-full font-semibold shadow-md hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: "#D1A980", color: "white" }}
+            >
+              Click here
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer
         className="p-8 border-t flex flex-col items-center justify-center gap-4"
@@ -239,6 +276,7 @@ export default function HomePage() {
           <p>All adoptions and interactions are the responsibility of the users.</p>
           <p>PawPass is a platform for connecting pet owners and adopters, but we cannot guarantee outcomes or vet the animals personally.</p>
           <p className="mt-2">© {new Date().getFullYear()} PawPass. All rights reserved.</p>
+          <p>Based in <strong>MALAYSIA</strong></p>
         </div>
       </footer>
     </div>

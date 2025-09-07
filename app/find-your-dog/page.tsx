@@ -5,7 +5,8 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import NavBar from "@/ui/NavBar";
+import NavBar from "@/components/ui/NavBar";
+import FilterForm from "@/components/FilterForm";
 
 interface Dog {
   _id: string;
@@ -61,12 +62,12 @@ export default function DogsPage() {
     fetchDogs();
   }, []);
 
-  // Close filter when route changes (e.g. navbar click)
+  // Close filter when route changes
   useEffect(() => {
     setShowMobileFilters(false);
   }, [pathname]);
 
-  // Close filter when window resized to desktop
+  // Close filter when resized to desktop
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
@@ -119,75 +120,6 @@ export default function DogsPage() {
     }));
   };
 
-  const FilterForm = () => (
-    <div className="flex flex-col">
-      {/* Gender */}
-      <label className="block mb-2 text-sm font-semibold">Gender</label>
-      <select
-        value={filters.gender}
-        onChange={(e) => setFilters((f) => ({ ...f, gender: e.target.value }))}
-        className="mb-4 border rounded p-2"
-      >
-        <option value="">All</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-      </select>
-
-      {/* Breed */}
-      <label className="block mb-2 text-sm font-semibold">Breed</label>
-      <select
-        value={filters.breed}
-        onChange={(e) => setFilters((f) => ({ ...f, breed: e.target.value }))}
-        className="mb-4 border rounded p-2"
-      >
-        <option value="">All</option>
-        {breeds.map((breed) => (
-          <option key={breed} value={breed}>
-            {breed}
-          </option>
-        ))}
-      </select>
-
-      {/* State */}
-      <label className="block mb-2 text-sm font-semibold">State</label>
-      <select
-        value={filters.state}
-        onChange={(e) => setFilters((f) => ({ ...f, state: e.target.value }))}
-        className="mb-4 border rounded p-2"
-      >
-        <option value="">All</option>
-        {STATES.map((state) => (
-          <option key={state} value={state}>
-            {state}
-          </option>
-        ))}
-      </select>
-
-      {/* Region */}
-      <label className="block mb-2 text-sm font-semibold">Region</label>
-      <select
-        value={filters.region}
-        onChange={(e) => setFilters((f) => ({ ...f, region: e.target.value }))}
-        className="mb-4 border rounded p-2"
-      >
-        <option value="">All</option>
-        {regions.map((region) => (
-          <option key={region} value={region}>
-            {region}
-          </option>
-        ))}
-      </select>
-
-      {/* Close button (mobile only) */}
-      <button
-        onClick={() => setShowMobileFilters(false)}
-        className="md:hidden mt-2 px-4 py-2 rounded bg-[#748873] text-white font-semibold"
-      >
-        Close Filters
-      </button>
-    </div>
-  );
-
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F8F8F8" }}>
       <NavBar />
@@ -207,7 +139,13 @@ export default function DogsPage() {
         {/* Sidebar (desktop) */}
         <aside className="hidden md:flex flex-col w-64 p-4 border-r bg-white">
           <h2 className="text-lg font-bold mb-4 text-[#748873]">Filter Dogs</h2>
-          <FilterForm />
+          <FilterForm
+            filters={filters}
+            setFilters={setFilters}
+            breeds={breeds}
+            regions={regions}
+            states={STATES}
+          />
         </aside>
 
         {/* Mobile filter panel with slide animation */}
@@ -229,7 +167,14 @@ export default function DogsPage() {
             }`}
           >
             <h2 className="text-lg font-bold mb-4 text-[#748873]">Filter Dogs</h2>
-            <FilterForm />
+            <FilterForm
+              filters={filters}
+              setFilters={setFilters}
+              breeds={breeds}
+              regions={regions}
+              states={STATES}
+              onClose={() => setShowMobileFilters(false)}
+            />
           </div>
         </div>
 
