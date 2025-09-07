@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "PawPass | Pet Rehome | For Pets | Made By Zainol Amzar",
-  description: "Pawpass is a centralized pet rehome system for seeking new home for pets",
+  description: "Pawpass is a centralised pet rehome system for seeking new home for pets",
 };
 
 export default function RootLayout({
