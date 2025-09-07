@@ -85,7 +85,8 @@ export default function HomePage() {
           </div>
           <div className="relative flex justify-center items-center h-full">
             <div className="absolute w-75 h-75 rounded-full -top-8 -left-8" style={{ backgroundColor: '#E5E0D8' }}></div>
-            <div className="absolute w-56 h-56 rounded-full -bottom-12 -right-4" style={{ backgroundColor: '#D1A980' }}></div>
+            <div className="absolute w-56 h-56 rounded-full -bottom-12 -right-4" style={{ backgroundColor: '#D1A980' }}>
+            </div>
 
             <div className="relative group mr-4">
               <div className="absolute -inset-2 rounded-xl" style={{ backgroundColor: '#D1A980' }}></div>

@@ -1,8 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
+import NavBar from "@/ui/NavBar";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 interface Cat {
   _id: string;
@@ -18,8 +21,36 @@ interface Cat {
   images: string[];
 }
 
+const STATES = [
+  "Perlis",
+  "Kedah",
+  "Pulau Pinang",
+  "Perak",
+  "Kelantan",
+  "Terengganu",
+  "Pahang",
+  "Selangor",
+  "Melaka",
+  "Negeri Sembilan",
+  "Johor",
+  "Sabah",
+  "Sarawak",
+  "WP Kuala Lumpur",
+  "WP Putrajaya",
+  "WP Labuan",
+];
+
 export default function CatsPage() {
   const [cats, setCats] = useState<Cat[]>([]);
+  const [currentIndexes, setCurrentIndexes] = useState<{ [key: string]: number }>({});
+  const [filters, setFilters] = useState({
+    gender: "",
+    breed: "",
+    state: "",
+    region: "",
+  });
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const fetchCats = async () => {
@@ -30,31 +61,251 @@ export default function CatsPage() {
     fetchCats();
   }, []);
 
+  // Close filters when navigating
+  useEffect(() => {
+    setShowMobileFilters(false);
+  }, [pathname]);
+
+  // Auto-close filter if resized to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setShowMobileFilters(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Extract available breeds and regions dynamically
+  const breeds = useMemo(() => Array.from(new Set(cats.map((c) => c.breed))), [cats]);
+  const regions = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          cats.map((c) => {
+            const [region] = c.location.split(",").map((s) => s.trim());
+            return region;
+          })
+        )
+      ),
+    [cats]
+  );
+
+  // Apply filters
+  const filteredCats = useMemo(() => {
+    return cats.filter((cat) => {
+      const [region, state] = cat.location.split(",").map((s) => s.trim());
+      return (
+        (!filters.gender || cat.gender === filters.gender) &&
+        (!filters.breed || cat.breed === filters.breed) &&
+        (!filters.state || state === filters.state) &&
+        (!filters.region || region === filters.region)
+      );
+    });
+  }, [cats, filters]);
+
+  const handleNext = (id: string, total: number) => {
+    setCurrentIndexes((prev) => ({
+      ...prev,
+      [id]: prev[id] !== undefined ? (prev[id] + 1) % total : 1,
+    }));
+  };
+
+  const handlePrev = (id: string, total: number) => {
+    setCurrentIndexes((prev) => ({
+      ...prev,
+      [id]: prev[id] !== undefined ? (prev[id] - 1 + total) % total : total - 1,
+    }));
+  };
+
+  const FilterForm = () => (
+    <div className="flex flex-col">
+      {/* Gender */}
+      <label className="block mb-2 text-sm font-semibold">Gender</label>
+      <select
+        value={filters.gender}
+        onChange={(e) => setFilters((f) => ({ ...f, gender: e.target.value }))}
+        className="mb-4 border rounded p-2"
+      >
+        <option value="">All</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+
+      {/* Breed */}
+      <label className="block mb-2 text-sm font-semibold">Breed</label>
+      <select
+        value={filters.breed}
+        onChange={(e) => setFilters((f) => ({ ...f, breed: e.target.value }))}
+        className="mb-4 border rounded p-2"
+      >
+        <option value="">All</option>
+        {breeds.map((breed) => (
+          <option key={breed} value={breed}>
+            {breed}
+          </option>
+        ))}
+      </select>
+
+      {/* State */}
+      <label className="block mb-2 text-sm font-semibold">State</label>
+      <select
+        value={filters.state}
+        onChange={(e) => setFilters((f) => ({ ...f, state: e.target.value }))}
+        className="mb-4 border rounded p-2"
+      >
+        <option value="">All</option>
+        {STATES.map((state) => (
+          <option key={state} value={state}>
+            {state}
+          </option>
+        ))}
+      </select>
+
+      {/* Region */}
+      <label className="block mb-2 text-sm font-semibold">Region</label>
+      <select
+        value={filters.region}
+        onChange={(e) => setFilters((f) => ({ ...f, region: e.target.value }))}
+        className="mb-4 border rounded p-2"
+      >
+        <option value="">All</option>
+        {regions.map((region) => (
+          <option key={region} value={region}>
+            {region}
+          </option>
+        ))}
+      </select>
+
+      {/* Close button (mobile only) */}
+      <button
+        onClick={() => setShowMobileFilters(false)}
+        className="md:hidden mt-2 px-4 py-2 rounded bg-[#748873] text-white font-semibold"
+      >
+        Close Filters
+      </button>
+    </div>
+  );
+
   return (
-    <div className="p-6 grid gap-6">
-      {cats.map((cat) => (
-        <Link key={cat._id} href={`/cats/${cat._id}`}>
-          <div className="border p-4 rounded cursor-pointer hover:shadow-md transition">
-            <h2 className="text-lg font-bold">{cat.breed}</h2>
-            <p>Location: {cat.location}</p>
-            <p>Gender: {cat.gender}</p>
-            <p>Age: {cat.age}</p>
-            <p>Owner: {cat.owner_name}</p>
-            <p>Phone: {cat.phone_number}</p>
-            <p>{cat.description}</p>
-            <div className="flex gap-2 mt-2">
-              {cat.images.map((url, idx) => (
-                <img
-                  key={idx}
-                  src={url}
-                  alt={cat.breed}
-                  className="w-24 h-24 object-cover rounded"
-                />
-              ))}
-            </div>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F8F8F8" }}>
+      <NavBar />
+
+      {/* Mobile filter toggle */}
+      <div className="md:hidden p-4 border-b flex justify-between items-center bg-white sticky top-0 z-40">
+        <h2 className="text-lg font-bold text-[#748873]">Filter Cats</h2>
+        <button
+          onClick={() => setShowMobileFilters((prev) => !prev)}
+          className="px-4 py-2 rounded bg-[#D1A980] text-white font-semibold"
+        >
+          {showMobileFilters ? "Close" : "Filters"}
+        </button>
+      </div>
+
+      <div className="flex flex-1">
+        {/* Sidebar (desktop) */}
+        <aside className="hidden md:flex flex-col w-64 p-4 border-r bg-white">
+          <h2 className="text-lg font-bold mb-4 text-[#748873]">Filter Cats</h2>
+          <FilterForm />
+        </aside>
+
+        {/* Mobile filter panel with slide animation */}
+        <div
+          className={`md:hidden fixed inset-0 z-50 flex transition-opacity duration-300 ${
+            showMobileFilters ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+        >
+          {/* Backdrop */}
+          <div
+            className="flex-1 bg-black bg-opacity-40"
+            onClick={() => setShowMobileFilters(false)}
+          />
+
+          {/* Sidebar */}
+          <div
+            className={`w-4/5 max-w-sm bg-white p-4 shadow-lg overflow-y-auto transform transition-transform duration-300 ${
+              showMobileFilters ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            <h2 className="text-lg font-bold mb-4 text-[#748873]">Filter Cats</h2>
+            <FilterForm />
           </div>
-        </Link>
-      ))}
+        </div>
+
+        {/* Main content */}
+        <main className="flex-1 p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredCats.length === 0 ? (
+            <div className="col-span-full flex flex-col items-center justify-center text-center p-10">
+              <Image src="/assets/cat-info.png" alt="No cats" width={150} height={150} />
+              <h2 className="text-2xl font-bold mt-4 text-[#748873]">
+                Oopsie! No kitty cats here yet 🐾
+              </h2>
+              <p className="text-lg text-[#D1A980] mt-2">
+                Be the first to add a fluffy friend!
+              </p>
+            </div>
+          ) : (
+            filteredCats.map((cat) => {
+              const currentIndex = currentIndexes[cat._id] || 0;
+
+              return (
+                <Link key={cat._id} href={`/cats/${cat._id}`}>
+                  <div className="bg-white border rounded-2xl shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition">
+                    {/* Image Carousel */}
+                    <div className="relative w-full h-56 bg-gray-100">
+                      {cat.images.length > 0 ? (
+                        <img
+                          src={cat.images[currentIndex]}
+                          alt={cat.breed}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center h-full text-[#748873] text-lg">
+                          No Image
+                        </div>
+                      )}
+                      {cat.images.length > 1 && (
+                        <>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handlePrev(cat._id, cat.images.length);
+                            }}
+                            className="absolute top-1/2 left-2 -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-2 shadow hover:bg-opacity-90"
+                          >
+                            ◀
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleNext(cat._id, cat.images.length);
+                            }}
+                            className="absolute top-1/2 right-2 -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-2 shadow hover:bg-opacity-90"
+                          >
+                            ▶
+                          </button>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Info */}
+                    <div className="p-4">
+                      <h2 className="text-xl font-bold text-[#748873] mb-1">{cat.breed}</h2>
+                      <p className="text-sm text-gray-600">📍 {cat.location}</p>
+                      <p className="text-sm text-gray-600">⚧ {cat.gender}</p>
+                      <p className="text-sm text-gray-600">🎂 {cat.age} old</p>
+                      <p className="text-sm text-gray-600">👤 {cat.owner_name}</p>
+                      <p className="text-sm text-gray-600">📞 {cat.phone_number}</p>
+                      <p className="text-sm mt-2 text-gray-700 line-clamp-3">{cat.description}</p>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })
+          )}
+        </main>
+      </div>
     </div>
   );
 }
