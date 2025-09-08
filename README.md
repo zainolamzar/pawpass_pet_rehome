@@ -52,7 +52,8 @@ CLOUDINARY_API_SECRET=<api-secret>
 <p>5. Initialize Prisma:</p>
 
 ```
-npx prisma generate npx prisma migrate dev --name init
+npx prisma generate 
+npx prisma migrate dev --name init
 ```
 
 <p>6. Run the development server:</p>
