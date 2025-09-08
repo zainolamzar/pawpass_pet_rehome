@@ -1,33 +1,8 @@
+export const runtime = "nodejs";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary";
-import mongoose from "mongoose";
-
-// --- MongoDB Connection ---
-if (!process.env.MONGODB_URI) {
-  throw new Error("MONGODB_URI is not defined in .env.local");
-}
-mongoose.connect(process.env.MONGODB_URI);
-
-// --- Schema ---
-const DogInfoSchema = new mongoose.Schema({
-  breed: String,
-  location: String,
-  gender: String,
-  description: String,
-  age: String,
-  phone_number: String,
-  owner_name: String,
-  animal: String,
-  isActive: { type: Boolean, default: false }, // default to false
-  isApproved: { type: Boolean, default: false }, // default to false
-  images: [String],
-  approvedAt: Date,
-  createdAt: { type: Date, default: Date.now },
-});
-
-const DogInfo =
-  mongoose.models.DogInfo || mongoose.model("dogInfo", DogInfoSchema);
+import prisma from "@/lib/prisma";
 
 // --- POST: Add new dog ---
 export async function POST(req: Request) {
@@ -43,55 +18,78 @@ export async function POST(req: Request) {
     const owner_name = formData.get("owner_name") as string;
     const animal = formData.get("animal") as string;
 
+    // new fields
+    const isNeutered = formData.get("isNeutered") === "true";
+    const isVaccinated = formData.get("isVaccinated") === "true";
+
     const files = formData.getAll("images") as File[];
-    const uploadPromises = files.map(async (file) => {
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
+    const uploadedUrls = await Promise.all(
+      files.map(async (file) => {
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        return new Promise<string>((resolve, reject) => {
+          cloudinary.uploader
+            .upload_stream({ folder: "dogs_rehome" }, (err, result) => {
+              if (err || !result) reject(err);
+              else resolve(result.secure_url);
+            })
+            .end(buffer);
+        });
+      })
+    );
 
-      return new Promise<string>((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream({ folder: "dogs_rehome" }, (err, result) => {
-            if (err || !result) reject(err);
-            else resolve(result.secure_url);
-          })
-          .end(buffer);
-      });
-    });
+    const region = location.split(",")[0]?.trim() || "unknown";
+    const slug = `meet-${owner_name.toLowerCase().replace(/\s+/g, "-")}-${breed.toLowerCase().replace(/\s+/g, "-")}-in-${region.toLowerCase().replace(/\s+/g, "-")}`;
 
-    const uploadedUrls = await Promise.all(uploadPromises);
-
-    const newDog = await DogInfo.create({
-      breed,
-      location,
-      gender,
-      description,
-      age,
-      phone_number,
-      owner_name,
-      animal,
-      images: uploadedUrls,
+    const newDog = await prisma.dogInfo.create({
+      data: {
+        breed,
+        location,
+        gender,
+        description,
+        age,
+        phoneNumber: phone_number,
+        ownerName: owner_name,
+        animal,
+        images: uploadedUrls,
+        slug,
+        isNeutered,
+        isVaccinated,
+        approvedAt: null,
+      },
     });
 
     return NextResponse.json({ success: true, data: newDog });
   } catch (err: any) {
-    return NextResponse.json(
-      { success: false, error: err.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
 }
 
-// --- GET: Fetch only active dogs ---
-export async function GET() {
+// --- GET: Fetch all dogs or single dog by slug ---
+export async function GET(req: Request) {
   try {
-    const dogs = await DogInfo.find({ isActive: true }).sort({
-      createdAt: -1,
+    const url = new URL(req.url);
+    const slug = url.searchParams.get("slug");
+
+    if (slug) {
+      const dog = await prisma.dogInfo.findUnique({
+        where: { slug },
+      });
+
+      if (!dog || !dog.isActive || !dog.isApproved) {
+        return NextResponse.json({ success: false, error: "Dog not found or not approved" }, { status: 404 });
+      }
+
+      return NextResponse.json({ success: true, data: dog });
+    }
+
+    const dogs = await prisma.dogInfo.findMany({
+      where: { isActive: true, isApproved: true },
+      orderBy: { createdAt: "desc" },
     });
+
     return NextResponse.json({ success: true, data: dogs });
   } catch (err: any) {
-    return NextResponse.json(
-      { success: false, error: err.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
 }

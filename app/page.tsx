@@ -3,8 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { 
-  Cat, 
-  Dog, 
   Heart, 
   PawPrint, 
   Search, 
@@ -14,6 +12,12 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { useEffect, useRef, useState } from "react";
+import NavBar from "@/components/ui/NavBar";
+// import StyledQR from "@/components/QRCodeStyling";
+import dynamic from "next/dynamic";
+
+// Lazy-load QR component (no SSR)
+const StyledQR = dynamic(() => import("@/components/QRCodeStyling"), { ssr: false });
 
 // Hook for fade-in on scroll
 function useFadeInOnScroll(threshold = 0.2) {
@@ -41,8 +45,10 @@ function useFadeInOnScroll(threshold = 0.2) {
 export default function HomePage() {
   const heroRef = useFadeInOnScroll(0.2);
   const featuresRef = useFadeInOnScroll(0.2);
+  const ctaRef = useFadeInOnScroll(0.2)
   const whyChooseRef = useFadeInOnScroll(0.2);
   const tipsRef = useFadeInOnScroll(0.2);
+  const supportRef = useFadeInOnScroll(0.2);
 
   const fadeClass = (isVisible: boolean) =>
     `transition-opacity duration-1000 transform ${
@@ -52,27 +58,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F8F8F8' }}>
       {/* Navbar */}
-      <nav className="flex justify-between items-center py-3 px-6 shadow-md sticky top-0 z-50" style={{ backgroundColor: '#E5E0D8', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
-        <Link href="/" className="flex items-center gap-3">
-          <Image src="/webicon/android-chrome-512x512.png" alt="PawPass Logo" width={45} height={45} />
-          <h1 className="text-2xl font-bold" style={{ color: '#748873', fontFamily: "'Comic Sans MS', cursive, sans-serif" }}>PawPass</h1>
-        </Link>
-        <div className="flex gap-5 items-center">
-          <Link href="/cats" className="hover:opacity-80 transition-opacity" title="Cats">
-            <Cat size={32} style={{ color: '#748873' }} />
-          </Link>
-          <Link href="/dogs" className="hover:opacity-80 transition-opacity" title="Dogs">
-            <Dog size={32} style={{ color: '#748873' }} />
-          </Link>
-          <Link
-            href="/submit"
-            className="text-white px-5 py-2 rounded-full font-semibold shadow-md hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: '#D1A980' }}
-          >
-            Submit a Pet
-          </Link>
-        </div>
-      </nav>
+      <NavBar />
 
       {/* Hero Section */}
       <main
@@ -106,7 +92,8 @@ export default function HomePage() {
           </div>
           <div className="relative flex justify-center items-center h-full">
             <div className="absolute w-75 h-75 rounded-full -top-8 -left-8" style={{ backgroundColor: '#E5E0D8' }}></div>
-            <div className="absolute w-56 h-56 rounded-full -bottom-12 -right-4" style={{ backgroundColor: '#D1A980' }}></div>
+            <div className="absolute w-56 h-56 rounded-full -bottom-12 -right-4" style={{ backgroundColor: '#D1A980' }}>
+            </div>
 
             <div className="relative group mr-4">
               <div className="absolute -inset-2 rounded-xl" style={{ backgroundColor: '#D1A980' }}></div>
@@ -164,6 +151,26 @@ export default function HomePage() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* CTA Section */}
+      <section
+        ref={ctaRef.ref}
+        className={`${fadeClass(ctaRef.isVisible)} py-20 px-8 w-full flex flex-col items-center justify-center`}
+        style={{ backgroundColor: "#D1A980" }}
+      >
+        <h2 className="text-4xl font-bold mb-6 text-white text-center">
+          Have a Pet to Rehome?
+        </h2>
+        <p className="text-lg mb-8 text-white text-center max-w-2xl">
+          Help your furry friend find a loving home. Submit your pet now and let our community connect with them.
+        </p>
+        <Link
+          href="/submit-your-pet"
+          className="px-8 py-4 rounded-full font-bold shadow-md text-[#D1A980] bg-white hover:opacity-90 transition-opacity"
+        >
+          Submit Your Pet
+        </Link>
       </section>
 
       {/* Why Choose Us Section */}
@@ -249,6 +256,38 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Support Me Section */}
+      <section
+        ref={supportRef.ref}
+        className={`${fadeClass(supportRef.isVisible)} py-20 px-8 w-full`}
+        style={{ backgroundColor: "#E5E0D8" }}
+      >
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-4xl font-bold mb-4" style={{ color: "#748873" }}>
+            A cup of coffee won’t hurt
+          </h2>
+          <p className="text-lg mb-8" style={{ color: "#748873" }}>
+            Support me in maintaining this site
+          </p>
+
+          <div className="flex flex-col items-center gap-4">
+            {/* Styled QR Code */}
+            <StyledQR url="https://sociabuzz.com/zainolamzar/donate" />
+
+            {/* Alternative link */}
+            <a
+              href="https://sociabuzz.com/zainolamzar/donate"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-6 py-3 rounded-full font-semibold shadow-md hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: "#D1A980", color: "white" }}
+            >
+              Click here
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer
         className="p-8 border-t flex flex-col items-center justify-center gap-4"
@@ -259,6 +298,7 @@ export default function HomePage() {
           <p>All adoptions and interactions are the responsibility of the users.</p>
           <p>PawPass is a platform for connecting pet owners and adopters, but we cannot guarantee outcomes or vet the animals personally.</p>
           <p className="mt-2">© {new Date().getFullYear()} PawPass. All rights reserved.</p>
+          <p>Based in <strong>MALAYSIA</strong></p>
         </div>
       </footer>
     </div>

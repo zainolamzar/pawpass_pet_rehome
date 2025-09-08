@@ -1,37 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<h1 align="center" id="title">PawPass MY - Pet Rehome System</h1>
 
-## Getting Started
+<p align="center"><img src="https://socialify.git.ci/zainolamzar/pawpass_pet_rehome/image?custom_description=&amp;custom_language=Next.js&amp;description=1&amp;font=Source+Code+Pro&amp;language=1&amp;name=1&amp;owner=1&amp;pattern=Brick+Wall&amp;theme=Light" alt="project-image"></p>
 
-First, run the development server:
+<p align="center"><img src="https://img.shields.io/badge/Next.js-15.5.2-black?logo=next.js&amp;logoColor=white" alt="shields"><img src="https://img.shields.io/badge/React-19.1.0-61DAFB?logo=react&amp;logoColor=black" alt="shields"><img src="https://img.shields.io/badge/Prisma-6.15.0-2D3748?logo=prisma&amp;logoColor=white" alt="shields"></p>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+<br>
+<p id="description">PawPass is a pet rehoming platform built in Malaysia to make the adoption and rehome process smoother safer and more compassionate. It connects pet owners who need to let go of their pets with responsible seekers who are looking for a new companion. Designed with the local community in mind PawPass helps reduce pet abandonment by offering a structured and supportive way to rehome pets responsibly.</p>
+
+  
+  
+<h2>🧐 Features</h2>
+
+Here're some of the project's best features:
+
+*   🐾 Pet Listing by Owners – Pet owners can create detailed posts with pet info age health status and photos.
+*   💕 Pet Discovery for Seekers – Pet lovers can browse filter and search pets by type breed or location.
+*   🔄 Smooth Rehome Process – Simplifies the connection between current owners and future caretakers.
+*   🔍 Advanced Search & Filters – Quickly find pets by category (dogs cats birds etc.) size or special needs.
+*   📍 Location-Based Matching – Discover pets available near you.
+*   🐕 Health & Care Details – Include vaccination status medical records and dietary needs.
+*   📷 Photo Gallery – Multiple images per pet to help seekers understand the pet better.
+
+<h2>🛠️ Installation Steps:</h2>
+
+<p>1. Clone the repository:</p>
+
+```
+git clone https://github.com/zainolamzar/pawpass_pet_rehome
+cd pet-rehome-system
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<p>3. Install dependencies:</p>
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+npm install 
+# or 
+yarn install 
+# or 
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+<p>4. Set up environment variables:</p>
 
-## Learn More
+```
+DATABASE_URL="postgresql://<user>:<password>@<host>/<database>?sslmode=require"  
+CLOUDINARY_CLOUD_NAME=<cloud-name>
+CLOUDINARY_API_KEY=<api-key>
+CLOUDINARY_API_SECRET=<api-secret>
+```
 
-To learn more about Next.js, take a look at the following resources:
+<p>5. Initialize Prisma:</p>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+npx prisma generate 
+npx prisma migrate dev --name init
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+<p>6. Run the development server:</p>
 
-## Deploy on Vercel
+```
+npm run dev 
+# or 
+yarn dev 
+# or 
+pnpm dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+  
+  
+<h2>💻 Built with</h2>
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-"# rehome" 
+Technologies used in the project:
+
+*   Next.js
+*   React
+*   Typescript
+*   Prisma
+*   Vercel
+*   Cloudinary
+*   Shadcn/ui
