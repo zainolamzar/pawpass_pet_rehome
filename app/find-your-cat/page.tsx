@@ -10,6 +10,7 @@ import FilterForm from "@/components/FilterForm";
 
 interface Cat {
   _id: string;
+  slug: string; // ensure this exists in your API
   breed: string;
   location: string;
   gender: string;
@@ -62,23 +63,18 @@ export default function CatsPage() {
     fetchCats();
   }, []);
 
-  // Close filters when navigating
   useEffect(() => {
     setShowMobileFilters(false);
   }, [pathname]);
 
-  // Auto-close filter if resized to desktop
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setShowMobileFilters(false);
-      }
+      if (window.innerWidth >= 768) setShowMobileFilters(false);
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Extract available breeds and regions dynamically
   const breeds = useMemo(() => Array.from(new Set(cats.map((c) => c.breed))), [cats]);
   const regions = useMemo(
     () =>
@@ -93,7 +89,6 @@ export default function CatsPage() {
     [cats]
   );
 
-  // Apply filters
   const filteredCats = useMemo(() => {
     return cats.filter((cat) => {
       const [region, state] = cat.location.split(",").map((s) => s.trim());
@@ -148,19 +143,16 @@ export default function CatsPage() {
           />
         </aside>
 
-        {/* Mobile filter panel with slide animation */}
+        {/* Mobile filter panel */}
         <div
           className={`md:hidden fixed inset-0 z-50 flex transition-opacity duration-300 ${
             showMobileFilters ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
         >
-          {/* Backdrop */}
           <div
             className="flex-1 bg-black bg-opacity-40"
             onClick={() => setShowMobileFilters(false)}
           />
-
-          {/* Sidebar */}
           <div
             className={`w-4/5 max-w-sm bg-white p-4 shadow-lg overflow-y-auto transform transition-transform duration-300 ${
               showMobileFilters ? "translate-x-0" : "translate-x-full"
@@ -195,7 +187,7 @@ export default function CatsPage() {
               const currentIndex = currentIndexes[cat._id] || 0;
 
               return (
-                <Link key={cat._id} href={`/cats/${cat._id}`}>
+                <Link key={cat._id} href={`/find-your-cat/${cat.slug}`} className="group">
                   <div className="bg-white border rounded-2xl shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition">
                     {/* Image Carousel */}
                     <div className="relative w-full h-56 bg-gray-100">
@@ -215,6 +207,7 @@ export default function CatsPage() {
                           <button
                             onClick={(e) => {
                               e.preventDefault();
+                              e.stopPropagation();
                               handlePrev(cat._id, cat.images.length);
                             }}
                             className="absolute top-1/2 left-2 -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-2 shadow hover:bg-opacity-90"
@@ -224,6 +217,7 @@ export default function CatsPage() {
                           <button
                             onClick={(e) => {
                               e.preventDefault();
+                              e.stopPropagation();
                               handleNext(cat._id, cat.images.length);
                             }}
                             className="absolute top-1/2 right-2 -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-2 shadow hover:bg-opacity-90"
@@ -239,10 +233,7 @@ export default function CatsPage() {
                       <h2 className="text-xl font-bold text-[#748873] mb-1">{cat.breed}</h2>
                       <p className="text-sm text-gray-600">📍 {cat.location}</p>
                       <p className="text-sm text-gray-600">⚧ {cat.gender}</p>
-                      <p className="text-sm text-gray-600">🎂 {cat.age} old</p>
-                      <p className="text-sm text-gray-600">👤 {cat.owner_name}</p>
-                      <p className="text-sm text-gray-600">📞 {cat.phone_number}</p>
-                      <p className="text-sm mt-2 text-gray-700 line-clamp-3">{cat.description}</p>
+                      <p className="text-sm text-gray-600">🎂 {cat.age} years old</p>
                     </div>
                   </div>
                 </Link>

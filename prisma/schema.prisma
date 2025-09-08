@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model CatInfo {
+  id          String   @id @default(cuid())
+  breed       String
+  location    String
+  gender      String
+  description String
+  age         String
+  phoneNumber String
+  ownerName   String
+  animal      String   @default("cat")
+  images      String[]
+  slug        String   @unique
+  approvedAt  DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model DogInfo {
+  id          String   @id @default(cuid())
+  breed       String
+  location    String
+  gender      String
+  description String
+  age         String
+  phoneNumber String
+  ownerName   String
+  animal      String   @default("cat")
+  images      String[]
+  slug        String   @unique
+  approvedAt  DateTime?
+  createdAt   DateTime @default(now())
+}

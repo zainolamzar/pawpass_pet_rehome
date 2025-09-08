@@ -13,7 +13,11 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from "react";
 import NavBar from "@/components/ui/NavBar";
-import StyledQR from "@/components/QRCodeStyling";
+// import StyledQR from "@/components/QRCodeStyling";
+import dynamic from "next/dynamic";
+
+// Lazy-load QR component (no SSR)
+const StyledQR = dynamic(() => import("@/components/QRCodeStyling"), { ssr: false });
 
 // Hook for fade-in on scroll
 function useFadeInOnScroll(threshold = 0.2) {
@@ -150,6 +154,24 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
+      <section
+        ref={ctaRef.ref}
+        className={`${fadeClass(ctaRef.isVisible)} py-20 px-8 w-full flex flex-col items-center justify-center`}
+        style={{ backgroundColor: "#D1A980" }}
+      >
+        <h2 className="text-4xl font-bold mb-6 text-white text-center">
+          Have a Pet to Rehome?
+        </h2>
+        <p className="text-lg mb-8 text-white text-center max-w-2xl">
+          Help your furry friend find a loving home. Submit your pet now and let our community connect with them.
+        </p>
+        <Link
+          href="/submit-your-pet"
+          className="px-8 py-4 rounded-full font-bold shadow-md text-[#D1A980] bg-white hover:opacity-90 transition-opacity"
+        >
+          Submit Your Pet
+        </Link>
+      </section>
 
       {/* Why Choose Us Section */}
       <section

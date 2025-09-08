@@ -1,35 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 import cloudinary from "@/lib/cloudinary";
-import mongoose from "mongoose";
 
-// --- MongoDB Connection ---
-if (!process.env.MONGODB_URI) {
-  throw new Error("MONGODB_URI is not defined in .env.local");
-}
-mongoose.connect(process.env.MONGODB_URI);
+const prisma = new PrismaClient();
 
-// --- Schema ---
-const CatInfoSchema = new mongoose.Schema({
-  breed: String,
-  location: String,
-  gender: String,
-  description: String,
-  age: String,
-  phone_number: String,
-  owner_name: String,
-  animal: String,
-  isActive: { type: Boolean, default: false }, // default to false
-  isApproved: { type: Boolean, default: false }, // default to false
-  images: [String],
-  approvedAt: Date,
-  createdAt: { type: Date, default: Date.now },
-});
-
-const CatInfo =
-  mongoose.models.CatInfo || mongoose.model("catInfo", CatInfoSchema);
-
-// --- POST: Add new cat ---
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
@@ -44,54 +19,72 @@ export async function POST(req: Request) {
     const animal = formData.get("animal") as string;
 
     const files = formData.getAll("images") as File[];
-    const uploadPromises = files.map(async (file) => {
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
+    const uploadedUrls = await Promise.all(
+      files.map(async (file) => {
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        return new Promise<string>((resolve, reject) => {
+          cloudinary.uploader
+            .upload_stream({ folder: "cats_rehome" }, (err, result) => {
+              if (err || !result) reject(err);
+              else resolve(result.secure_url);
+            })
+            .end(buffer);
+        });
+      })
+    );
 
-      return new Promise<string>((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream({ folder: "cats_rehome" }, (err, result) => {
-            if (err || !result) reject(err);
-            else resolve(result.secure_url);
-          })
-          .end(buffer);
-      });
-    });
+    const region = location.split(",")[0]?.trim() || "unknown";
+    const slug = `meet-${owner_name.toLowerCase().replace(/\s+/g, "-")}-${breed.toLowerCase().replace(/\s+/g, "-")}-in-${region.toLowerCase().replace(/\s+/g, "-")}`;
 
-    const uploadedUrls = await Promise.all(uploadPromises);
-
-    const newCat = await CatInfo.create({
-      breed,
-      location,
-      gender,
-      description,
-      age,
-      phone_number,
-      owner_name,
-      animal,
-      images: uploadedUrls,
+    const newCat = await prisma.catInfo.create({
+      data: {
+        breed,
+        location,
+        gender,
+        description,
+        age,
+        phoneNumber: phone_number,
+        ownerName: owner_name,
+        animal,
+        images: uploadedUrls,
+        slug,
+        approvedAt: null, // initially null
+      },
     });
 
     return NextResponse.json({ success: true, data: newCat });
   } catch (err: any) {
-    return NextResponse.json(
-      { success: false, error: err.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
 }
 
-// --- GET: Fetch only active cats ---
-export async function GET() {
+// --- GET: Fetch all cats or fetch one by slug ---
+export async function GET(req: Request) {
   try {
-    const cats = await CatInfo.find({ isActive: true }).sort({
-      createdAt: -1,
+    const url = new URL(req.url);
+    const slug = url.searchParams.get("slug");
+
+    if (slug) {
+      // Fetch single cat by slug
+      const cat = await prisma.catInfo.findUnique({
+        where: { slug },
+      });
+
+      if (!cat) {
+        return NextResponse.json({ success: false, error: "Cat not found" }, { status: 404 });
+      }
+
+      return NextResponse.json({ success: true, data: cat });
+    }
+
+    // Fetch all cats
+    const cats = await prisma.catInfo.findMany({
+      orderBy: { createdAt: "desc" },
     });
+
     return NextResponse.json({ success: true, data: cats });
   } catch (err: any) {
-    return NextResponse.json(
-      { success: false, error: err.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
 }

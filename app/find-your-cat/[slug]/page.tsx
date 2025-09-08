@@ -1,15 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
-import CatInfo from "@/lib/models/CatInfo";
 import { notFound } from "next/navigation";
-import { Key } from "react";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export default async function CatDetailPage({
   params,
 }: {
   params: { slug: string };
 }) {
-  // Directly fetch from MongoDB
-  const cat = await CatInfo.findById(params.slug);
+  // Fetch cat by slug using Prisma
+  const cat = await prisma.catInfo.findUnique({
+    where: { slug: params.slug },
+  });
 
   if (!cat) return notFound();
 
@@ -20,18 +23,21 @@ export default async function CatDetailPage({
       <p>Location: {cat.location}</p>
       <p>Gender: {cat.gender}</p>
       <p>Age: {cat.age}</p>
-      <p>Owner: {cat.owner_name}</p>
-      <p>Phone: {cat.phone_number}</p>
-      <div className="flex gap-2 mt-4 flex-wrap">
-        {cat.images.map((url: string | Blob | undefined, idx: Key | null | undefined) => (
-          <img
-            key={idx}
-            src={url}
-            alt={cat.breed}
-            className="w-40 h-40 object-cover rounded"
-          />
-        ))}
-      </div>
+      <p>Owner: {cat.ownerName}</p>
+      <p>Phone: {cat.phoneNumber}</p>
+
+      {cat.images && cat.images.length > 0 && (
+        <div className="flex gap-2 mt-4 flex-wrap">
+          {cat.images.map((url, idx) => (
+            <img
+              key={idx}
+              src={url}
+              alt={cat.breed}
+              className="w-40 h-40 object-cover rounded"
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

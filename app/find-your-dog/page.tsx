@@ -10,6 +10,7 @@ import FilterForm from "@/components/FilterForm";
 
 interface Dog {
   _id: string;
+  slug: string; // added slug
   breed: string;
   location: string;
   gender: string;
@@ -106,14 +107,16 @@ export default function DogsPage() {
     });
   }, [dogs, filters]);
 
-  const handleNext = (id: string, total: number) => {
+  const handleNext = (id: string, total: number, e: React.MouseEvent) => {
+    e.stopPropagation();
     setCurrentIndexes((prev) => ({
       ...prev,
       [id]: prev[id] !== undefined ? (prev[id] + 1) % total : 1,
     }));
   };
 
-  const handlePrev = (id: string, total: number) => {
+  const handlePrev = (id: string, total: number, e: React.MouseEvent) => {
+    e.stopPropagation();
     setCurrentIndexes((prev) => ({
       ...prev,
       [id]: prev[id] !== undefined ? (prev[id] - 1 + total) % total : total - 1,
@@ -193,7 +196,7 @@ export default function DogsPage() {
               const currentIndex = currentIndexes[dog._id] || 0;
 
               return (
-                <Link key={dog._id} href={`/dogs/${dog._id}`}>
+                <Link key={dog._id} href={`/find-your-dog/${dog.slug}`}>
                   <div className="bg-white border rounded-2xl shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition">
                     {/* Image Carousel */}
                     <div className="relative w-full h-56 bg-gray-100">
@@ -211,19 +214,13 @@ export default function DogsPage() {
                       {dog.images.length > 1 && (
                         <>
                           <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handlePrev(dog._id, dog.images.length);
-                            }}
+                            onClick={(e) => handlePrev(dog._id, dog.images.length, e)}
                             className="absolute top-1/2 left-2 -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-2 shadow hover:bg-opacity-90"
                           >
                             ◀
                           </button>
                           <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleNext(dog._id, dog.images.length);
-                            }}
+                            onClick={(e) => handleNext(dog._id, dog.images.length, e)}
                             className="absolute top-1/2 right-2 -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-2 shadow hover:bg-opacity-90"
                           >
                             ▶

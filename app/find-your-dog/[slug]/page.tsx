@@ -1,15 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
-import DogInfo from "@/lib/models/DogInfo";
 import { notFound } from "next/navigation";
-import { Key } from "react";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export default async function DogDetailPage({
   params,
 }: {
   params: { slug: string };
 }) {
-  // Directly fetch from MongoDB
-  const dog = await DogInfo.findById(params.slug);
+  // Fetch dog by slug using Prisma
+  const dog = await prisma.dogInfo.findUnique({
+    where: { slug: params.slug },
+  });
 
   if (!dog) return notFound();
 
@@ -20,18 +23,21 @@ export default async function DogDetailPage({
       <p>Location: {dog.location}</p>
       <p>Gender: {dog.gender}</p>
       <p>Age: {dog.age}</p>
-      <p>Owner: {dog.owner_name}</p>
-      <p>Phone: {dog.phone_number}</p>
-      <div className="flex gap-2 mt-4 flex-wrap">
-        {dog.images.map((url: string | Blob | undefined, idx: Key | null | undefined) => (
-          <img
-            key={idx}
-            src={url}
-            alt={dog.breed}
-            className="w-40 h-40 object-cover rounded"
-          />
-        ))}
-      </div>
+      <p>Owner: {dog.ownerName}</p>
+      <p>Phone: {dog.phoneNumber}</p>
+
+      {dog.images && dog.images.length > 0 && (
+        <div className="flex gap-2 mt-4 flex-wrap">
+          {dog.images.map((url, idx) => (
+            <img
+              key={idx}
+              src={url}
+              alt={dog.breed}
+              className="w-40 h-40 object-cover rounded"
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
