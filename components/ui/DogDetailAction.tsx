@@ -39,7 +39,7 @@ export default function DogDetailAction({ breed, slug, phoneNumber }: CatActions
       try {
         await navigator.share({
           title: `Check out ${breed}!`,
-          text: `Hi, check out this cat available for adoption!`,
+          text: `Hi, check out this dog available for adoption!`,
           url,
         });
         handleFeedback("share");
