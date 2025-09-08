@@ -22,16 +22,21 @@ export default function SubmitPetLoading({ isVisible }: SubmitPetLoadingProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-0 animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm animate-fade-in"
       style={{ animationFillMode: "forwards", animationDuration: "0.5s" }}
     >
-      <div className="flex flex-col items-center">
+      <div className="bg-gradient-to-br from-purple-800 via-blue-900 to-teal-800 rounded-3xl p-6 flex flex-col items-center shadow-2xl animate-bounce-slow">
         <img
           src="/assets/dog-walk.gif"
           alt="Submitting..."
-          className="w-40 h-40 mb-4"
+          className="w-40 h-40 mb-4 rounded-full shadow-lg"
         />
-        <h2 className="text-2xl font-bold text-white">Submitting...</h2>
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-white text-center drop-shadow-lg">
+          Submitting...
+        </h2>
+        <p className="mt-2 text-white font-medium text-sm sm:text-base text-center drop-shadow-sm">
+          Hang tight! Your friend is on the way 🐶✨
+        </p>
       </div>
     </div>
   );

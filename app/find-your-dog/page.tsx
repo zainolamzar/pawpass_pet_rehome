@@ -49,10 +49,8 @@ export default function DogsPage() {
     fetchDogs();
   }, []);
 
-  // Close mobile filters on route change
   useEffect(() => setShowMobileFilters(false), [pathname]);
 
-  // Close mobile filters on desktop resize
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) setShowMobileFilters(false);
@@ -61,11 +59,9 @@ export default function DogsPage() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Unique breeds & regions
-  const breeds = useMemo(() => Array.from(new Set(dogs.map((d) => d.breed))), [dogs]);
+  const breeds = useMemo(() => Array.from(new Set(dogs.map(d => d.breed))), [dogs]);
   const regions = useMemo(() => Array.from(new Set(dogs.map(d => d.location.split(",")[0].trim()))), [dogs]);
 
-  // Apply filters
   const filteredDogs = useMemo(() => {
     return dogs.filter((dog) => {
       const [region, state] = dog.location.split(",").map((s) => s.trim());
@@ -92,7 +88,6 @@ export default function DogsPage() {
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F8F8F8" }}>
       <NavBar />
 
-      {/* Mobile filter toggle */}
       <div className="md:hidden p-4 border-b flex justify-between items-center bg-white sticky top-0 z-40">
         <h2 className="text-lg font-bold text-[#748873]">Filter Dogs</h2>
         <button
@@ -104,13 +99,11 @@ export default function DogsPage() {
       </div>
 
       <div className="flex flex-1">
-        {/* Sidebar (desktop) */}
         <aside className="hidden md:flex flex-col w-64 p-4 border-r bg-white">
           <h2 className="text-lg font-bold mb-4 text-[#748873]">Filter Dogs</h2>
           <FilterForm filters={filters} setFilters={setFilters} breeds={breeds} regions={regions} states={STATES} />
         </aside>
 
-        {/* Mobile filter panel */}
         <div className={`md:hidden fixed inset-0 z-50 flex transition-opacity duration-300 ${showMobileFilters ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
           <div className="flex-1 bg-black bg-opacity-40" onClick={() => setShowMobileFilters(false)} />
           <div className={`w-4/5 max-w-sm bg-white p-4 shadow-lg overflow-y-auto transform transition-transform duration-300 ${showMobileFilters ? "translate-x-0" : "translate-x-full"}`}>
@@ -119,7 +112,6 @@ export default function DogsPage() {
           </div>
         </div>
 
-        {/* Main content */}
         <main className="flex-1 p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredDogs.length === 0 ? (
             <div className="col-span-full flex flex-col items-center justify-center text-center p-10">
@@ -133,39 +125,49 @@ export default function DogsPage() {
 
               return (
                 <Link key={dog._id} href={`/find-your-dog/${dog.slug}`} className="group">
-                  <div className="bg-white border rounded-2xl shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition">
+                  <div className="bg-white border rounded-2xl shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition flex flex-col h-[360px]">
                     {/* Image carousel */}
-                    <div className="relative w-full h-56 bg-gray-100">
+                    <div className="relative w-full h-56 bg-gray-100 flex-shrink-0">
                       {dog.images.length > 0 ? (
-                        <img src={dog.images[currentIndex]} alt={dog.breed} className="w-full h-full object-cover" />
+                        <img
+                          key={`${dog._id}-${currentIndex}`}
+                          src={dog.images[currentIndex]}
+                          alt={dog.breed}
+                          className="w-full h-full object-cover"
+                        />
                       ) : (
-                        <div className="flex items-center justify-center h-full text-[#748873] text-lg">No Image</div>
+                        <div key={`${dog._id}-noimg`} className="flex items-center justify-center h-full text-[#748873] text-lg">
+                          No Image
+                        </div>
                       )}
-
                       {dog.images.length > 1 && (
-                        <div key={`carousel-buttons-${dog._id}`}>
+                        <>
                           <button
+                            key={`prev-${dog._id}`}
                             onClick={e => handlePrev(dog._id, dog.images.length, e)}
                             className="absolute top-1/2 left-2 -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-2 shadow hover:bg-opacity-90"
                           >
                             ◀
                           </button>
                           <button
+                            key={`next-${dog._id}`}
                             onClick={e => handleNext(dog._id, dog.images.length, e)}
                             className="absolute top-1/2 right-2 -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-2 shadow hover:bg-opacity-90"
                           >
                             ▶
                           </button>
-                        </div>
+                        </>
                       )}
                     </div>
 
                     {/* Info */}
-                    <div className="p-4">
-                      <h2 className="text-xl font-bold text-[#748873] mb-1">{dog.breed}</h2>
-                      <p className="text-sm text-gray-600">📍 {dog.location}</p>
-                      <p className="text-sm text-gray-600">⚧ {dog.gender}</p>
-                      <p className="text-sm text-gray-600">🎂 {dog.age} years old</p>
+                    <div className="p-4 flex-1 flex flex-col justify-between">
+                      <div>
+                        <h2 className="text-xl font-bold text-[#748873] mb-1">{dog.breed}</h2>
+                        <p className="text-sm text-gray-600 truncate">📍 {dog.location}</p>
+                        <p className="text-sm text-gray-600 truncate">⚧ {dog.gender}</p>
+                        <p className="text-sm text-gray-600 truncate">🎂 {dog.age} years old</p>
+                      </div>
                     </div>
                   </div>
                 </Link>
