@@ -69,17 +69,19 @@ export async function GET(req: Request) {
       // Fetch single cat by slug
       const cat = await prisma.catInfo.findUnique({
         where: { slug },
+        // Only return if active & approved
       });
 
-      if (!cat) {
-        return NextResponse.json({ success: false, error: "Cat not found" }, { status: 404 });
+      if (!cat || !cat.isActive || !cat.isApproved) {
+        return NextResponse.json({ success: false, error: "Cat not found or not approved" }, { status: 404 });
       }
 
       return NextResponse.json({ success: true, data: cat });
     }
 
-    // Fetch all cats
+    // Fetch all cats - only active & approved
     const cats = await prisma.catInfo.findMany({
+      where: { isActive: true, isApproved: true },
       orderBy: { createdAt: "desc" },
     });
 

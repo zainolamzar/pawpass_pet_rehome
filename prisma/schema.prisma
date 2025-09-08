@@ -19,6 +19,8 @@ model CatInfo {
   animal      String   @default("cat")
   images      String[]
   slug        String   @unique
+  isActive    Boolean  @default(false)
+  isApproved  Boolean  @default(false)
   approvedAt  DateTime?
   createdAt   DateTime @default(now())
 }
@@ -32,9 +34,11 @@ model DogInfo {
   age         String
   phoneNumber String
   ownerName   String
-  animal      String   @default("cat")
+  animal      String   @default("dog")
   images      String[]
   slug        String   @unique
+  isActive    Boolean  @default(false)
+  isApproved  Boolean  @default(false)
   approvedAt  DateTime?
   createdAt   DateTime @default(now())
 }

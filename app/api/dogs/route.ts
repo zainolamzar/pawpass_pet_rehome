@@ -72,15 +72,16 @@ export async function GET(req: Request) {
         where: { slug },
       });
 
-      if (!dog) {
-        return NextResponse.json({ success: false, error: "Dog not found" }, { status: 404 });
+      if (!dog || !dog.isActive || !dog.isApproved) {
+        return NextResponse.json({ success: false, error: "Dog not found or not approved" }, { status: 404 });
       }
 
       return NextResponse.json({ success: true, data: dog });
     }
 
-    // Fetch all dogs
+    // Fetch all dogs - only active & approved
     const dogs = await prisma.dogInfo.findMany({
+      where: { isActive: true, isApproved: true },
       orderBy: { createdAt: "desc" },
     });
 

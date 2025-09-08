@@ -38,7 +38,7 @@ export default function Navbar() {
               <Dog size={32} className="text-[#748873]" />
             </Link>
             <Link
-              href="/submit"
+              href="/submit-your-pet"
               className="text-white px-5 py-2 rounded-full font-semibold shadow-md hover:opacity-90 transition-opacity"
               style={{ backgroundColor: "#D1A980" }}
             >
