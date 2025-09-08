@@ -8,37 +8,41 @@ datasource db {
 }
 
 model CatInfo {
-  id          String   @id @default(cuid())
-  breed       String
-  location    String
-  gender      String
-  description String
-  age         String
-  phoneNumber String
-  ownerName   String
-  animal      String   @default("cat")
-  images      String[]
-  slug        String   @unique
-  isActive    Boolean  @default(false)
-  isApproved  Boolean  @default(false)
-  approvedAt  DateTime?
-  createdAt   DateTime @default(now())
+  id           String    @id @default(cuid())
+  breed        String
+  location     String
+  gender       String
+  description  String
+  age          String
+  phoneNumber  String
+  ownerName    String
+  animal       String    @default("cat")
+  images       String[]
+  slug         String    @unique
+  isNeutered   Boolean   @default(false)
+  isVaccinated Boolean   @default(false)
+  isActive     Boolean   @default(false)
+  isApproved   Boolean   @default(false)
+  approvedAt   DateTime?
+  createdAt    DateTime  @default(now())
 }
 
 model DogInfo {
-  id          String   @id @default(cuid())
-  breed       String
-  location    String
-  gender      String
-  description String
-  age         String
-  phoneNumber String
-  ownerName   String
-  animal      String   @default("dog")
-  images      String[]
-  slug        String   @unique
-  isActive    Boolean  @default(false)
-  isApproved  Boolean  @default(false)
-  approvedAt  DateTime?
-  createdAt   DateTime @default(now())
+  id           String    @id @default(cuid())
+  breed        String
+  location     String
+  gender       String
+  description  String
+  age          String
+  phoneNumber  String
+  ownerName    String
+  animal       String    @default("dog")
+  images       String[]
+  slug         String    @unique
+  isNeutered   Boolean   @default(false)
+  isVaccinated Boolean   @default(false)
+  isActive     Boolean   @default(false)
+  isApproved   Boolean   @default(false)
+  approvedAt   DateTime?
+  createdAt    DateTime  @default(now())
 }

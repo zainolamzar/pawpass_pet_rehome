@@ -18,6 +18,10 @@ export async function POST(req: Request) {
     const owner_name = formData.get("owner_name") as string;
     const animal = formData.get("animal") as string;
 
+    // new fields
+    const isNeutered = formData.get("isNeutered") === "true";
+    const isVaccinated = formData.get("isVaccinated") === "true";
+
     const files = formData.getAll("images") as File[];
     const uploadedUrls = await Promise.all(
       files.map(async (file) => {
@@ -49,7 +53,9 @@ export async function POST(req: Request) {
         animal,
         images: uploadedUrls,
         slug,
-        approvedAt: null, // initially null
+        isNeutered,
+        isVaccinated,
+        approvedAt: null,
       },
     });
 
@@ -66,7 +72,6 @@ export async function GET(req: Request) {
     const slug = url.searchParams.get("slug");
 
     if (slug) {
-      // Fetch single dog by slug
       const dog = await prisma.dogInfo.findUnique({
         where: { slug },
       });
@@ -78,7 +83,6 @@ export async function GET(req: Request) {
       return NextResponse.json({ success: true, data: dog });
     }
 
-    // Fetch all dogs - only active & approved
     const dogs = await prisma.dogInfo.findMany({
       where: { isActive: true, isApproved: true },
       orderBy: { createdAt: "desc" },

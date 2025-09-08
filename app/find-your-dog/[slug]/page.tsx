@@ -84,11 +84,7 @@ export default async function DogDetailPage({
   };
 
   // Compute parent path for back link
-  const getBack = () => {
-    return "/find-your-dog";
-  };
-
-  const backLink = getBack();
+  const backLink = "/find-your-dog";
 
   return (
     <div className="min-h-screen p-4 sm:p-6 flex flex-col items-center bg-[#E5E0D8]">
@@ -112,6 +108,7 @@ export default async function DogDetailPage({
               {dog.breed} 🐶
             </h1>
 
+            {/* Badges: Gender, Age, Location, Vaccinated, Neutered */}
             <div className="flex flex-wrap gap-2 justify-center md:justify-start">
               <span className="px-3 py-1 rounded-full bg-[#D1A980] text-white font-semibold text-sm">
                 {dog.gender === "male" ? "♂ Male" : "♀ Female"}
@@ -121,6 +118,12 @@ export default async function DogDetailPage({
               </span>
               <span className="px-3 py-1 rounded-full bg-[#D1A980] text-white font-semibold text-sm">
                 {dog.location}
+              </span>
+              <span className="px-3 py-1 rounded-full bg-[#748873] text-white font-semibold text-sm">
+                💉 {dog.isVaccinated ? "Vaccinated" : "Not Vaccinated"}
+              </span>
+              <span className="px-3 py-1 rounded-full bg-[#D1A980] text-white font-semibold text-sm">
+                ✂️ {dog.isNeutered ? "Neutered" : "Not Neutered"}
               </span>
             </div>
 

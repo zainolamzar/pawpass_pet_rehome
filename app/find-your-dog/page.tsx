@@ -21,6 +21,8 @@ interface Dog {
   animal: string;
   isActive: boolean;
   isApproved: boolean;
+  isVaccinated: boolean;
+  isNeutered: boolean;
   images: string[];
 }
 
@@ -33,7 +35,14 @@ const STATES = [
 export default function DogsPage() {
   const [dogs, setDogs] = useState<Dog[]>([]);
   const [currentIndexes, setCurrentIndexes] = useState<{ [key: string]: number }>({});
-  const [filters, setFilters] = useState({ gender: "", breed: "", state: "", region: "" });
+  const [filters, setFilters] = useState({
+    gender: "",
+    breed: "",
+    state: "",
+    region: "",
+    isVaccinated: "",
+    isNeutered: "",
+  });
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const pathname = usePathname();
 
@@ -69,7 +78,9 @@ export default function DogsPage() {
         (!filters.gender || dog.gender === filters.gender) &&
         (!filters.breed || dog.breed === filters.breed) &&
         (!filters.state || state === filters.state) &&
-        (!filters.region || region === filters.region)
+        (!filters.region || region === filters.region) &&
+        (!filters.isVaccinated || String(dog.isVaccinated) === filters.isVaccinated) &&
+        (!filters.isNeutered || String(dog.isNeutered) === filters.isNeutered)
       );
     });
   }, [dogs, filters]);

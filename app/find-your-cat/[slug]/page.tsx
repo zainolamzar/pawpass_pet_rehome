@@ -84,10 +84,7 @@ export default async function CatDetailPage({
   };
 
   // Compute parent path for back link
-  const getBack = () => {
-    return "/find-your-cat";
-  };
-
+  const getBack = () => "/find-your-cat";
   const backLink = getBack();
 
   return (
@@ -112,6 +109,7 @@ export default async function CatDetailPage({
               {cat.breed} 🐱
             </h1>
 
+            {/* Badges: Gender, Age, Location, Vaccinated, Neutered */}
             <div className="flex flex-wrap gap-2 justify-center md:justify-start">
               <span className="px-3 py-1 rounded-full bg-[#D1A980] text-white font-semibold text-sm">
                 {cat.gender === "male" ? "♂ Male" : "♀ Female"}
@@ -121,6 +119,12 @@ export default async function CatDetailPage({
               </span>
               <span className="px-3 py-1 rounded-full bg-[#D1A980] text-white font-semibold text-sm">
                 {cat.location}
+              </span>
+              <span className="px-3 py-1 rounded-full bg-[#748873] text-white font-semibold text-sm">
+                💉 {cat.isVaccinated ? "Vaccinated" : "Not Vaccinated"}
+              </span>
+              <span className="px-3 py-1 rounded-full bg-[#D1A980] text-white font-semibold text-sm">
+                ✂️ {cat.isNeutered ? "Neutered" : "Not Neutered"}
               </span>
             </div>
 

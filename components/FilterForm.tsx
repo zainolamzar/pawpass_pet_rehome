@@ -8,6 +8,8 @@ interface FilterFormProps {
     breed: string;
     state: string;
     region: string;
+    isVaccinated: string;
+    isNeutered: string;
   };
   setFilters: React.Dispatch<
     React.SetStateAction<{
@@ -15,12 +17,14 @@ interface FilterFormProps {
       breed: string;
       state: string;
       region: string;
+      isVaccinated: string;
+      isNeutered: string;
     }>
   >;
   breeds: string[];
   regions: string[];
   states: string[];
-  onClose?: () => void; // optional (for mobile close button)
+  onClose?: () => void;
 }
 
 export default function FilterForm({
@@ -88,6 +92,30 @@ export default function FilterForm({
             {region}
           </option>
         ))}
+      </select>
+
+      {/* Vaccination */}
+      <label className="block mb-2 text-sm font-semibold">Vaccinated</label>
+      <select
+        value={filters.isVaccinated}
+        onChange={(e) => setFilters((f) => ({ ...f, isVaccinated: e.target.value }))}
+        className="mb-4 border rounded p-2"
+      >
+        <option value="">All</option>
+        <option value="true">Yes</option>
+        <option value="false">No</option>
+      </select>
+
+      {/* Neutered */}
+      <label className="block mb-2 text-sm font-semibold">Neutered</label>
+      <select
+        value={filters.isNeutered}
+        onChange={(e) => setFilters((f) => ({ ...f, isNeutered: e.target.value }))}
+        className="mb-4 border rounded p-2"
+      >
+        <option value="">All</option>
+        <option value="true">Yes</option>
+        <option value="false">No</option>
       </select>
 
       {/* Close button (mobile only) */}

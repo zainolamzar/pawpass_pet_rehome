@@ -21,6 +21,8 @@ interface Cat {
   animal: string;
   isActive: boolean;
   isApproved: boolean;
+  isVaccinated: boolean;
+  isNeutered: boolean;
   images: string[];
 }
 
@@ -33,7 +35,14 @@ const STATES = [
 export default function CatsPage() {
   const [cats, setCats] = useState<Cat[]>([]);
   const [currentIndexes, setCurrentIndexes] = useState<{ [key: string]: number }>({});
-  const [filters, setFilters] = useState({ gender: "", breed: "", state: "", region: "" });
+  const [filters, setFilters] = useState({
+    gender: "",
+    breed: "",
+    state: "",
+    region: "",
+    isVaccinated: "",
+    isNeutered: "",
+  });
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const pathname = usePathname();
 
@@ -68,7 +77,9 @@ export default function CatsPage() {
         (!filters.gender || cat.gender === filters.gender) &&
         (!filters.breed || cat.breed === filters.breed) &&
         (!filters.state || state === filters.state) &&
-        (!filters.region || region === filters.region)
+        (!filters.region || region === filters.region) &&
+        (!filters.isVaccinated || String(cat.isVaccinated) === filters.isVaccinated) &&
+        (!filters.isNeutered || String(cat.isNeutered) === filters.isNeutered)
       );
     });
   }, [cats, filters]);

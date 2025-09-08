@@ -52,6 +52,10 @@ export default function RehomeForm() {
   const [errors, setErrors] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // new neutered/vaccinated fields
+  const [isNeutered, setIsNeutered] = useState("no");
+  const [isVaccinated, setIsVaccinated] = useState("no");
+
   // Validate steps
   const validateStep = (stepNumber: number) => {
     const newErrors: string[] = [];
@@ -60,6 +64,8 @@ export default function RehomeForm() {
       if (!breed || breed.trim() === "") newErrors.push("Please enter/select a breed");
       if (!age) newErrors.push("Please enter age");
       if (!description) newErrors.push("Please enter description");
+      if (!isNeutered) newErrors.push("Please select neutered status");
+      if (!isVaccinated) newErrors.push("Please select vaccinated status");
     }
     if (stepNumber === 2) {
       if (!ownerName) newErrors.push("Please enter your name");
@@ -128,6 +134,10 @@ export default function RehomeForm() {
       formData.append("phone_number", phoneNumber.replace(/\D/g, ""));
       formData.append("owner_name", ownerName);
       formData.append("animal", animal);
+
+      // convert neutered/vaccinated to boolean
+      formData.append("isNeutered", isNeutered === "yes" ? "true" : "false");
+      formData.append("isVaccinated", isVaccinated === "yes" ? "true" : "false");
 
       const endpoint = animal === "cat" ? "/api/cats" : "/api/dogs";
       const res = await fetch(endpoint, { method: "POST", body: formData });
@@ -224,6 +234,32 @@ export default function RehomeForm() {
                 required
                 className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#D1A980]"
               />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-[#748873] mb-1">Neutered</label>
+              <select
+                value={isNeutered}
+                onChange={(e) => setIsNeutered(e.target.value)}
+                className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#D1A980]"
+              >
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[#748873] mb-1">Vaccinated</label>
+              <select
+                value={isVaccinated}
+                onChange={(e) => setIsVaccinated(e.target.value)}
+                className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#D1A980]"
+              >
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
             </div>
           </div>
 
