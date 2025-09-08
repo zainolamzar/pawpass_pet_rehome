@@ -27,22 +27,26 @@ Here're some of the project's best features:
 
 ```
 git clone https://github.com/zainolamzar/pawpass_pet_rehome
-```
-
-```
 cd pet-rehome-system
 ```
 
 <p>3. Install dependencies:</p>
 
 ```
-npm install # or yarn install # or pnpm install
+npm install 
+# or 
+yarn install 
+# or 
+pnpm install
 ```
 
 <p>4. Set up environment variables:</p>
 
 ```
-DATABASE_URL="postgresql://neondb_owner:npg_TJ7ipDeUYbF4@ep-holy-dawn-a128m6j8-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"  CLOUDINARY_CLOUD_NAME=damiiff9h CLOUDINARY_API_KEY=811759234138715 CLOUDINARY_API_SECRET=jfnhot5O6Ng9_r9eIoiMLdqj-Fg
+DATABASE_URL="postgresql://<user>:<password>@<host>/<database>?sslmode=require"  
+CLOUDINARY_CLOUD_NAME=<cloud-name>
+CLOUDINARY_API_KEY=<api-key>
+CLOUDINARY_API_SECRET=<api-secret>
 ```
 
 <p>5. Initialize Prisma:</p>
@@ -54,7 +58,11 @@ npx prisma generate npx prisma migrate dev --name init
 <p>6. Run the development server:</p>
 
 ```
-npm run dev # or yarn dev # or pnpm dev
+npm run dev 
+# or 
+yarn dev 
+# or 
+pnpm dev
 ```
 
   
