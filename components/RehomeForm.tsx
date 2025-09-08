@@ -30,13 +30,13 @@ const states = [
 ];
 
 const MAX_FILES = 3;
-const MAX_SIZE_MB = 10; // Cloudinary limit
+const MAX_SIZE_MB = 10;
 
 export default function RehomeForm() {
   const router = useRouter();
   const [step, setStep] = useState(1);
 
-  // form fields
+  // Form fields
   const [breed, setBreed] = useState("");
   const [state, setState] = useState(states[0]);
   const [regions, setRegions] = useState<string[]>([]);
@@ -52,23 +52,21 @@ export default function RehomeForm() {
   const [errors, setErrors] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // ✅ Validation for each step
+  // Validate steps
   const validateStep = (stepNumber: number) => {
     const newErrors: string[] = [];
 
     if (stepNumber === 1) {
-      if (!breed) newErrors.push("Please select a breed");
+      if (!breed || breed.trim() === "") newErrors.push("Please enter/select a breed");
       if (!age) newErrors.push("Please enter age");
       if (!description) newErrors.push("Please enter description");
     }
-
     if (stepNumber === 2) {
       if (!ownerName) newErrors.push("Please enter your name");
       if (!phoneNumber) newErrors.push("Please enter your phone number");
       if (!state || state === "Choose states") newErrors.push("Please select a state");
       if (!region) newErrors.push("Please select a region");
     }
-
     if (stepNumber === 3) {
       if (images.length === 0) newErrors.push("Please upload at least 1 photo");
     }
@@ -77,12 +75,11 @@ export default function RehomeForm() {
     return newErrors.length === 0;
   };
 
-  // Handle image selection with size limit and memory-safe preview URLs
+  // Image handlers
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
 
     const files = Array.from(e.target.files);
-
     const validFiles = files.filter((file) => {
       const sizeMB = file.size / (1024 * 1024);
       if (sizeMB > MAX_SIZE_MB) {
@@ -93,29 +90,25 @@ export default function RehomeForm() {
     });
 
     const newFiles = [...images, ...validFiles].slice(0, MAX_FILES);
-
-    // Revoke old preview URLs to prevent memory leaks
     previewUrls.forEach((url) => URL.revokeObjectURL(url));
-
     setImages(newFiles);
     setPreviewUrls(newFiles.map((file) => URL.createObjectURL(file)));
   };
 
-  // Remove image from selection
   const handleRemoveImage = (index: number) => {
     const newImages = [...images];
     const newPreviews = [...previewUrls];
-    URL.revokeObjectURL(newPreviews[index]); // revoke URL
+    URL.revokeObjectURL(newPreviews[index]);
     newImages.splice(index, 1);
     newPreviews.splice(index, 1);
     setImages(newImages);
     setPreviewUrls(newPreviews);
   };
 
+  // Submit handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate all steps
     const stepsValid = [1, 2, 3].every((s) => validateStep(s));
     if (!stepsValid) return;
 
@@ -128,7 +121,6 @@ export default function RehomeForm() {
       const selectedState = state && state !== "Choose states" ? state : "unknown";
       const selectedRegion = region || "unknown";
       formData.append("location", `${selectedRegion}, ${selectedState}`);
-
       formData.append("breed", breed);
       formData.append("gender", gender);
       formData.append("description", description);
@@ -143,9 +135,7 @@ export default function RehomeForm() {
 
       if (!data.success) throw new Error(data.error || "Failed to submit pet");
 
-      setTimeout(() => {
-        router.push("/submit-your-pet/successful");
-      }, 1000);
+      setTimeout(() => router.push("/submit-your-pet/successful"), 1000);
     } catch (err: any) {
       console.error(err);
       alert(`Submission failed: ${err.message}`);
@@ -160,7 +150,6 @@ export default function RehomeForm() {
       style={{ border: "3px dashed #D1A980" }}
     >
       {loading && <SubmitLoading isVisible={loading} />}
-
       <h2 className="text-3xl font-bold text-center" style={{ color: "#748873" }}>
         🐾 Rehome Your Pet
       </h2>
@@ -183,7 +172,7 @@ export default function RehomeForm() {
         ))}
       </div>
 
-      {/* Step 1: Pet Info */}
+      {/* Step 1 */}
       {step === 1 && (
         <div className="flex flex-col gap-4">
           <div className="flex gap-4 justify-center flex-wrap">
@@ -212,6 +201,7 @@ export default function RehomeForm() {
               <label className="block text-sm font-medium text-[#748873] mb-1">Breed</label>
               <BreedSelect animal={animal as "cat" | "dog"} breed={breed} setBreed={setBreed} />
             </div>
+
             <div>
               <label className="block text-sm font-medium text-[#748873] mb-1">Gender</label>
               <select
@@ -223,14 +213,18 @@ export default function RehomeForm() {
                 <option value="female">♀ Female</option>
               </select>
             </div>
-            <input
-              type="text"
-              placeholder="Age (e.g., 2)"
-              value={age}
-              onChange={(e) => setAge(e.target.value)}
-              required
-              className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#D1A980]"
-            />
+
+            <div>
+              <label className="block text-sm font-medium text-[#748873] mb-1">Age</label>
+              <input
+                type="text"
+                placeholder="e.g., 2"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                required
+                className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#D1A980]"
+              />
+            </div>
           </div>
 
           <textarea
@@ -243,7 +237,7 @@ export default function RehomeForm() {
         </div>
       )}
 
-      {/* Step 2: Owner Info */}
+      {/* Step 2 */}
       {step === 2 && (
         <div className="grid grid-cols-2 gap-4">
           <input
@@ -285,15 +279,14 @@ export default function RehomeForm() {
         </div>
       )}
 
-      {/* Step 3: Photos */}
+      {/* Step 3 */}
       {step === 3 && (
         <div className="flex flex-col gap-4">
           <div
-            className={`p-4 border-2 border-dashed rounded-xl text-center cursor-pointer transition 
-            ${images.length >= MAX_FILES ? "opacity-50 cursor-not-allowed" : "hover:bg-[#E5E0D8]"}`}
-            onClick={() => {
-              if (images.length < MAX_FILES) document.getElementById("pet-images")?.click();
-            }}
+            className={`p-4 border-2 border-dashed rounded-xl text-center cursor-pointer transition ${
+              images.length >= MAX_FILES ? "opacity-50 cursor-not-allowed" : "hover:bg-[#E5E0D8]"
+            }`}
+            onClick={() => images.length < MAX_FILES && document.getElementById("pet-images")?.click()}
           >
             <span className="text-[#748873] font-medium">📸 Upload Pet Photos (Max 3, 10MB each)</span>
           </div>
@@ -305,7 +298,7 @@ export default function RehomeForm() {
             accept="image/*"
             onChange={handleImageChange}
             className="hidden"
-            onClick={(e) => e.stopPropagation()} // prevent auto-submit
+            onClick={(e) => e.stopPropagation()}
           />
 
           <div className="flex flex-wrap gap-2 justify-center">
@@ -329,7 +322,7 @@ export default function RehomeForm() {
         </div>
       )}
 
-      {/* Navigation buttons */}
+      {/* Navigation */}
       <div className="flex flex-col md:flex-row gap-2 mt-4">
         {step === 1 && (
           <button
@@ -367,7 +360,7 @@ export default function RehomeForm() {
         )}
       </div>
 
-      {/* Error messages */}
+      {/* Errors */}
       {errors.length > 0 && (
         <ul className="text-red-500 text-sm mt-2">
           {errors.map((err, idx) => (

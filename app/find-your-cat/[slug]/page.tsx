@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import { notFound } from "next/navigation";
 import { PrismaClient } from "@prisma/client";
-import BackButton from "@/components/ui/BackButton";
 import CatActions from "@/components/ui/CatDetailAction";
+import Link from "next/link";
 
 const prisma = new PrismaClient();
 
@@ -83,10 +83,22 @@ export default async function CatDetailPage({
     }
   };
 
+  // Compute parent path for back link
+  const getBack = () => {
+    return "/find-your-cat";
+  };
+
+  const backLink = getBack();
+
   return (
     <div className="min-h-screen p-4 sm:p-6 flex flex-col items-center bg-[#E5E0D8]">
       {/* Back Button */}
-      <BackButton />
+      <Link
+        href={backLink}
+        className="self-start mb-4 px-4 py-2 bg-[#D1A980] text-white font-semibold rounded-xl shadow-md hover:opacity-90"
+      >
+        ← Back
+      </Link>
 
       {/* Main Card */}
       <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 max-w-3xl w-full flex flex-col md:flex-row gap-6 border-4 border-[#D1A980]">
