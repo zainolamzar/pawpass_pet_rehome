@@ -1,10 +1,8 @@
 export const runtime = "nodejs";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import cloudinary from "@/lib/cloudinary";
-
-const prisma = new PrismaClient();
+import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
