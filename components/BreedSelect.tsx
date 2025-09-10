@@ -13,9 +13,53 @@ interface BreedSelectProps {
   setBreed: (val: string) => void;
 }
 
-const catBreeds = ["Persian", "Siamese", "Maine Coon", "Bengal", "Ragdoll", "Sphynx"];
-const dogBreeds = ["Beagle", "Golden Retriever", "Bulldog", "Poodle", "German Shepherd", "Labrador"];
-
+const catBreeds = [
+  "Abyssinian",
+  "American Bobtail",
+  "American Shorthair",
+  "Balinese",
+  "Birman",
+  "Bombay",
+  "British Shorthair",
+  "Chartreux",
+  "Cornish Rex",
+  "Devon Rex",
+  "Egyptian Mau",
+  "Exotic Shorthair",
+  "Havana Brown",
+  "Himalayan",
+  "Javanese",
+  "Korat",
+  "Maine Coon",
+  "Mixed Breed",
+  "Nebelung",
+  "Norwegian Forest Cat",
+  "Ocicat",
+  "Oriental",
+  "Persian",
+  "Ragdoll",
+  "Russian Blue",
+  "Scottish Fold",
+  "Siamese",
+  "Singapura",
+  "Sphynx",
+  "Snowshoe",
+  "Somali",
+  "Turkish Angora",
+  "Turkish Van",
+  "Kucing Malaysia"
+];
+const dogBreeds = [
+  "Chihuahua",
+  "Golden Retriever",
+  "Labrador Retriever",
+  "Mixed Breed",
+  "Miniature Pinscher",
+  "Pomeranian",
+  "Poodle",
+  "Shih Tzu",
+  "Telomian"
+];
 export function BreedSelect({ animal, breed, setBreed }: BreedSelectProps) {
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
