@@ -30,7 +30,7 @@ export default function CatDetailAction({ breed, slug, phoneNumber }: CatActions
 
   const handleWhatsApp = () => {
     const message = `Hi, I'm interested in adopting ${breed}.`;
-    window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
+    window.open(`https://wa.me/+60${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
     handleFeedback("whatsapp");
   };
 
