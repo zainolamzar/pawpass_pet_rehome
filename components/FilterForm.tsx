@@ -40,6 +40,7 @@ export default function FilterForm({
       {/* Gender */}
       <label className="block mb-2 text-sm font-semibold">Gender</label>
       <select
+        data-testid="gender"
         value={filters.gender}
         onChange={(e) => setFilters((f) => ({ ...f, gender: e.target.value }))}
         className="mb-4 border rounded p-2"
@@ -52,6 +53,7 @@ export default function FilterForm({
       {/* Breed */}
       <label className="block mb-2 text-sm font-semibold">Breed</label>
       <select
+        data-testid="breed"
         value={filters.breed}
         onChange={(e) => setFilters((f) => ({ ...f, breed: e.target.value }))}
         className="mb-4 border rounded p-2"
@@ -67,6 +69,7 @@ export default function FilterForm({
       {/* State */}
       <label className="block mb-2 text-sm font-semibold">State</label>
       <select
+        data-testid="state"
         value={filters.state}
         onChange={(e) => setFilters((f) => ({ ...f, state: e.target.value }))}
         className="mb-4 border rounded p-2"
@@ -82,6 +85,7 @@ export default function FilterForm({
       {/* Region */}
       <label className="block mb-2 text-sm font-semibold">Region</label>
       <select
+        data-testid="region"
         value={filters.region}
         onChange={(e) => setFilters((f) => ({ ...f, region: e.target.value }))}
         className="mb-4 border rounded p-2"
@@ -97,6 +101,7 @@ export default function FilterForm({
       {/* Vaccination */}
       <label className="block mb-2 text-sm font-semibold">Vaccinated</label>
       <select
+        data-testid="vaccinated"
         value={filters.isVaccinated}
         onChange={(e) => setFilters((f) => ({ ...f, isVaccinated: e.target.value }))}
         className="mb-4 border rounded p-2"
@@ -109,6 +114,7 @@ export default function FilterForm({
       {/* Neutered */}
       <label className="block mb-2 text-sm font-semibold">Neutered</label>
       <select
+        data-testid="neutered"
         value={filters.isNeutered}
         onChange={(e) => setFilters((f) => ({ ...f, isNeutered: e.target.value }))}
         className="mb-4 border rounded p-2"

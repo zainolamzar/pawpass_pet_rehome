@@ -215,6 +215,7 @@ export default function RehomeForm() {
             <div>
               <label className="block text-sm font-medium text-[#748873] mb-1">Gender</label>
               <select
+                data-testid="gender"
                 value={gender}
                 onChange={(e) => setGender(e.target.value)}
                 className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#D1A980]"
@@ -227,6 +228,7 @@ export default function RehomeForm() {
             <div>
               <label className="block text-sm font-medium text-[#748873] mb-1">Age</label>
               <input
+                data-testid="age"
                 type="text"
                 placeholder="e.g., 2"
                 value={age}
@@ -241,6 +243,7 @@ export default function RehomeForm() {
             <div>
               <label className="block text-sm font-medium text-[#748873] mb-1">Neutered</label>
               <select
+                data-testid="neutered"
                 value={isNeutered}
                 onChange={(e) => setIsNeutered(e.target.value)}
                 className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#D1A980]"
@@ -253,6 +256,7 @@ export default function RehomeForm() {
             <div>
               <label className="block text-sm font-medium text-[#748873] mb-1">Vaccinated</label>
               <select
+                data-testid="vaccinated"
                 value={isVaccinated}
                 onChange={(e) => setIsVaccinated(e.target.value)}
                 className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#D1A980]"
@@ -264,6 +268,7 @@ export default function RehomeForm() {
           </div>
 
           <textarea
+            data-testid="description"
             placeholder="Tell us about your pet (playful, shy, favorite food...)"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -277,6 +282,7 @@ export default function RehomeForm() {
       {step === 2 && (
         <div className="grid grid-cols-2 gap-4">
           <input
+            data-testid="name"
             type="text"
             placeholder="Your Name"
             value={ownerName}
@@ -285,6 +291,7 @@ export default function RehomeForm() {
             className="p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#D1A980]"
           />
           <input
+            data-testid="number"
             type="text"
             placeholder="Your Phone Number"
             value={phoneNumber}
@@ -294,6 +301,7 @@ export default function RehomeForm() {
           />
 
           <StateSelect
+            data-testid="state"
             state={state}
             setState={async (selectedState) => {
               setState(selectedState);
@@ -311,7 +319,13 @@ export default function RehomeForm() {
             states={states}
           />
 
-          <RegionSelect region={region} setRegion={setRegion} regions={regions} disabled={!regions.length} />
+          <RegionSelect 
+            data-testid="region"
+            region={region} 
+            setRegion={setRegion} 
+            regions={regions} 
+            disabled={!regions.length} 
+          />
         </div>
       )}
 
@@ -328,6 +342,7 @@ export default function RehomeForm() {
           </div>
 
           <input
+            data-testid="pet-images"
             id="pet-images"
             type="file"
             multiple
