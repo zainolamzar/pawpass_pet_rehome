@@ -1,33 +1,31 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import '@testing-library/jest-dom'
+import React from 'react'
 
 // Mock Next.js <Image />
 jest.mock('next/image', () => {
-  return function Image(props) {
-    return <img {...props} />
+  return function MockedImage(props: any) {
+    return React.createElement('img', props)
   }
 })
 
-// Mock next/dynamic (unwraps .default if needed)
+// Mock next/dynamic
 jest.mock('next/dynamic', () => {
-  return (dynamicImport, options) => {
+  return (dynamicImport: any, options: any) => {
     if (typeof dynamicImport === 'function') {
       const mod = dynamicImport()
-      // If it's a promise (from import()), unwrap synchronously
-      if (mod.then) {
-        return () => null // fallback dummy component
+      if (mod && typeof (mod as Promise<any>).then === 'function') {
+        return () => null
       }
-      return mod.default || mod
+      return (mod as any).default || mod
     }
 
     if (dynamicImport && typeof dynamicImport.loader === 'function') {
       const mod = dynamicImport.loader()
-      if (mod.then) {
+      if (mod && typeof (mod as Promise<any>).then === 'function') {
         return () => null
       }
-      return mod.default || mod
+      return (mod as any).default || mod
     }
 
     return () => null
@@ -36,7 +34,6 @@ jest.mock('next/dynamic', () => {
 
 // Mock IntersectionObserver
 class IntersectionObserverMock {
-  constructor(callback, options) {}
   observe() {}
   unobserve() {}
   disconnect() {}
