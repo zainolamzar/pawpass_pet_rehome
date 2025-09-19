@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import nextJest from 'next/jest'
 import type { Config } from 'jest'
 
@@ -13,6 +12,10 @@ const config: Config = {
   coverageProvider: 'v8',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   testEnvironment: 'jsdom',
+
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/$1",
+  },
 }
 
 export default createJestConfig(config)
