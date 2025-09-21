@@ -27,7 +27,7 @@ describe("Testing the Dogs page", () => {
       age: "2",
       phone_number: "0123456789",
       owner_name: "Alice",
-      animal: "cat",
+      animal: "dog",
       isActive: true,
       isApproved: true,
       isVaccinated: true,
