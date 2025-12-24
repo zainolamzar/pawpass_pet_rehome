@@ -31,7 +31,7 @@
     "date-fns": "^4.1.0",
     "lucide-react": "^0.542.0",
     "multer": "^2.0.2",
-    "next": "15.5.2",
+    "next": "15.5.9",
     "next-sitemap": "^4.2.3",
     "prisma": "^6.15.0",
     "qr-code-styling": "^1.9.2",
